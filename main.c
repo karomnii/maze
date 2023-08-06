@@ -21,82 +21,30 @@
 #include <fenv.h> // for floating-point control functions
 
 
-#define ROWS 10
-#define COLS 10
-
-
-
-
-
-
 int main() {
     srand(time(NULL));
-    struct cell maze[ROWS][COLS];
-    for (size_t i = 0; i < ROWS; i++)
+    unsigned rows, cols;
+    printf("Enter the number of rows and columns of the maze: ");
+    if(scanf("%u %u",  &rows,  &cols) != 2)
     {
-        for (size_t j = 0; j < COLS; j++)
-        {
-            maze[i][j].x = i;
-            maze[i][j].y = j;
-            maze[i][j].visited = false;
-            if(i == 0)
-                maze[i][j].up = NULL;
-            else
-                maze[i][j].up = &maze[i-1][j];
-            if(i == ROWS-1)
-                maze[i][j].down = NULL;
-            else
-                maze[i][j].down = &maze[i+1][j]; 
-            if(j == 0)
-                maze[i][j].left = NULL;
-            else
-                maze[i][j].left = &maze[i][j-1];
-            if(j == COLS-1)
-                maze[i][j].right = NULL;
-            else
-                maze[i][j].right = &maze[i][j+1];
-            maze[i][j].up_wall = true;
-            maze[i][j].down_wall = true;
-            maze[i][j].left_wall = true;
-            maze[i][j].right_wall = true;
-        }
+        printf("Incorrect input\n Exiting...\n");
+        return 1;
     }
-    generate_maze(maze, &maze[0][0]);
-
+    struct cell **maze;
+    int result = initialize_maze(&maze, rows, cols);
+    if(result == 1)
+    {
+        printf("Incorrect input data\n Exiting...\n");
+        return 2;
+    }
+    if(result == 4)
+    {
+        printf("Memory allocation error\n Exiting...\n");
+        return 4;
+    }
+    generate_maze((*maze + (int)cols/2));
     printf("Generated Perfect Maze:\n");
-    for (size_t i = 0; i < ROWS; i++)
-    {
-        for (size_t j = 0; j < COLS; j++)
-        {
-            printf("+");
-            if(maze[i][j].up_wall == true)
-                printf("---");
-            else
-                printf("   ");
-        }
-        printf("+\n");
-        for (size_t j = 0; j < COLS; j++)
-        {
-            if(maze[i][j].left_wall == true)
-                printf("|");
-            else
-                printf(" ");
-            if(maze[i][j].visited == true)
-                printf(" * ");
-            else
-                printf("   ");
-        }
-        if(maze[i][COLS-1].right_wall == true)
-            printf("|");
-        else
-            printf(" ");
-        printf("\n");
-    }
-    for (size_t j = 0; j < COLS; j++)
-        {
-            printf("+");
-            printf("---");
-        }
-    printf("+");
+    print_maze(maze);
+    destroy_maze(maze);
     return 0;
 }
