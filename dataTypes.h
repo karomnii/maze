@@ -17,5 +17,19 @@ struct cell {
     bool right_wall;
 };
 
+// enum position_section{
+//     MID,UP,RIGHT,DOWN,LEFT
+// };
+
+struct point{
+    unsigned int x;
+    unsigned int y;
+};
+
+// struct board_information{
+//     bool is_player;
+//     point player_position;
+//     position_section block_part;
+// }
 
 #endif //MAZE_DATATYPES_H

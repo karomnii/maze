@@ -45,6 +45,13 @@ int main() {
     generate_maze((*maze + (int)cols/2));
     printf("Generated Perfect Maze:\n");
     print_maze(maze);
+    while (getchar() != '\n');
+    char **maze_image;
+    maze_to_memory(maze,&maze_image);
+    print_maze_image(maze_image);
+    destroy_maze_image(maze_image);
+    printf("\nPress Enter to continue...");
+    while (getchar() != '\n');
     destroy_maze(maze);
     return 0;
 }
