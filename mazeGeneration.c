@@ -131,54 +131,37 @@ void print_maze(struct cell **maze){
     while(*(maze+i) != NULL) {
         int j = 0;
         while((*(*(maze+i)+j)).right != NULL) {
-            printf("+");
             if((*(*(maze+i)+j)).up_wall == true)
-                printf("---");
+                printf("+---");
             else
-                printf("   ");
+                printf("+   ");
             j++;
         }
-        printf("+");
-            if((*(*(maze+i)+j)).up_wall == true)
-                printf("---");
-            else
-                printf("   ");
+        if((*(*(maze+i)+j)).up_wall == true)
+            printf("+---");
+        else
+            printf("+   ");
         printf("+\n");
         j = 0;
         while((*(*(maze+i)+j)).right != NULL) {
             if((*(*(maze+i)+j)).left_wall == true)
-                printf("|");
+                printf("| * ");
             else
-                printf(" ");
-            if((*(*(maze+i)+j)).visited == true)
-                printf(" * ");
-            else
-                printf("   ");
+                printf("  * ");
             j++;
         }
         if((*(*(maze+i)+j)).left_wall == true)
-                printf("|");
-            else
-                printf(" ");
-            if((*(*(maze+i)+j)).visited == true)
-                printf(" * ");
-            else
-                printf("   ");
-        if((*(*(maze+i)+j)).right_wall == true)
-            printf("|");
+            printf("| * ");
         else
-            printf(" ");
-        printf("\n");
+            printf("  * ");
+        printf("|\n");
         i++;
     }
     for (size_t j = 0; (*(*(maze+0)+j)).right != NULL; j++)
         {
-            printf("+");
-            printf("---");
+            printf("+---");
         }
-    printf("+");
-            printf("---");
-    printf("+\n");
+    printf("+---+\n");
 }
 int maze_to_memory(struct cell **maze,char ***maze_image){
     if(maze==NULL||maze_image==NULL) return 1;
@@ -187,9 +170,9 @@ int maze_to_memory(struct cell **maze,char ***maze_image){
     if(rows<3) return 1;
     while ((*maze+cols)->right!=NULL) cols++; cols++;
     if(cols<3) return 1;
-    *maze_image=calloc(3*rows+1,sizeof(char *));
+    *maze_image=calloc(2*rows+2,sizeof(char *));
     if(*maze_image==NULL) return 4;
-    for (unsigned int i = 0; i < rows*3; i++)
+    for (unsigned int i = 0; i < rows*2+1; i++)
     {
         *(*maze_image+i)=calloc(4*cols+1+1,sizeof(char));
         if(*(*maze_image+i)==NULL){
@@ -201,23 +184,20 @@ int maze_to_memory(struct cell **maze,char ***maze_image){
     {
         for (size_t j = 0; j < cols; j++)
         {
-            // testing, later change to proper maze image
-            sprintf(*(*maze_image+i*3),"%s%c",*(*maze_image+i*3),'#');
-            sprintf(*(*maze_image+i*3),"%s%d",*(*maze_image+i*3),i);
-            sprintf(*(*maze_image+i*3),"%s%d",*(*maze_image+i*3),j);
-            sprintf(*(*maze_image+i*3),"%s%c",*(*maze_image+i*3),'#');
-            sprintf(*(*maze_image+i*3+1),"%s%c",*(*maze_image+i*3+1),'#');
-            sprintf(*(*maze_image+i*3+1),"%s%d",*(*maze_image+i*3+1),i);
-            sprintf(*(*maze_image+i*3+1),"%s%d",*(*maze_image+i*3+1),j);
-            sprintf(*(*maze_image+i*3+1),"%s%c",*(*maze_image+i*3+1),'#');
-            sprintf(*(*maze_image+i*3+2),"%s%c",*(*maze_image+i*3+2),'#');
-            sprintf(*(*maze_image+i*3+2),"%s%d",*(*maze_image+i*3+2),i);
-            sprintf(*(*maze_image+i*3+2),"%s%d",*(*maze_image+i*3+2),j);
-            sprintf(*(*maze_image+i*3+2),"%s%c",*(*maze_image+i*3+2),'#');
+            if((*(*(maze+i)+j)).up_wall==true) sprintf(*(*maze_image+i*2),"%s%s",*(*maze_image+i*2),"+---");
+            else sprintf(*(*maze_image+i*2),"%s%s",*(*maze_image+i*2),"+   ");
+            if((*(*(maze+i)+j)).left_wall==true) sprintf(*(*maze_image+i*2+1),"%s%s",*(*maze_image+i*2+1),"|   ");
+            else sprintf(*(*maze_image+i*2+1),"%s%s",*(*maze_image+i*2+1),"    ");
         }
-        
+        sprintf(*(*maze_image+i*2),"%s%c",*(*maze_image+i*2),'+');
+        sprintf(*(*maze_image+i*2+1),"%s%c",*(*maze_image+i*2+1),'|');
     }
-    
+    for (size_t j = 0; j < cols; j++)
+        {
+            sprintf(*(*maze_image+rows*2),"%s%s",*(*maze_image+rows*2),"+---");
+        }
+    sprintf(*(*maze_image+rows*2),"%s%c",*(*maze_image+rows*2),'+');
+    return 0;
 }
 void destroy_maze_image(char **maze_image){
     if(maze_image==NULL) return;

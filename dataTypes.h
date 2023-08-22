@@ -17,9 +17,12 @@ struct cell {
     bool right_wall;
 };
 
-// enum position_section{
-//     MID,UP,RIGHT,DOWN,LEFT
-// };
+enum direction{
+    UP,
+    DOWN,
+    LEFT,
+    RIGHT
+};
 
 struct point{
     unsigned int x;
