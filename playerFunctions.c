@@ -42,10 +42,9 @@ void add_player(char **maze_image, struct point enterance_point, struct point *p
     //returns: -1,-1=invalid function x,y=valid enterance point
     if(maze_image==NULL) return;
     if(player_position==NULL) return;
-    if(board_is_empty(maze_image)==0) return;
     int rows=get_rows(maze_image);
     int columns=get_columns(maze_image);
-    if(enterance_point.x<0 || enterance_point.x>=rows || enterance_point.y<0 || enterance_point.y>=columns){
+    if(enterance_point.x<0 || enterance_point.x>=columns || enterance_point.y<0 || enterance_point.y>=rows){
         player_position->x=-1;
         player_position->y=-1;
         return;
@@ -65,7 +64,7 @@ void add_exit(char **maze_image, struct point exit_point){
     if(maze_image==NULL) return;
     int rows=get_rows(maze_image);
     int columns=get_columns(maze_image);
-    if(exit_point.x<0 || exit_point.x>=rows || exit_point.y<0 || exit_point.y>=columns){
+    if(exit_point.x<0 || exit_point.x>=columns || exit_point.y<0 || exit_point.y>=rows){
         return;
     }
     if(*(*(maze_image+exit_point.y)+exit_point.x)!=' '){
@@ -79,7 +78,7 @@ void add_treasure(char **maze_image, struct point treasure_point){
     if(maze_image==NULL) return;
     int rows=get_rows(maze_image);
     int columns=get_columns(maze_image);
-    if(treasure_point.x<0 || treasure_point.x>=rows || treasure_point.y<0 || treasure_point.y>=columns){
+    if(treasure_point.x<0 || treasure_point.x>=columns || treasure_point.y<0 || treasure_point.y>=rows){
         return;
     }
     if(*(*(maze_image+treasure_point.y)+treasure_point.x)!=' '){

@@ -40,16 +40,21 @@ int main() {
     while (getchar() != '\n');
     char **maze_image;
     maze_to_memory(maze,&maze_image);
+    destroy_maze(maze);
+    //only chars for now
     print_maze_image(maze_image);
     struct point player_location;
     struct point start;
     start.x=1;
     start.y=1;
     struct point end;
-    end.x=cols*4-1;
-    end.y=rows*2-1;
+    end.x=(cols)*4-1;
+    end.y=(rows)*2-1;
+    print_maze_image(maze_image);
     add_player(maze_image,start,&player_location);
+    print_maze_image(maze_image);
     add_exit(maze_image,end);
+    print_maze_image(maze_image);
     
     //need to get into this for now chatgpt generated
     HANDLE hStdin = GetStdHandle(STD_INPUT_HANDLE);
@@ -75,33 +80,45 @@ int main() {
             {
             case 'w':
             case 'W':
-                printf("UP\n");
+            case (char)38: //arows are not working
+                if(move_player(maze_image,&player_location,UP)!=1){
+                    continue;
+                }
                 break;
             case 'a':
             case 'A':
-                printf("LEFT\n");
+            case (char)37: //arows are not working
+                if(move_player(maze_image,&player_location,LEFT)!=1){
+                    continue;
+                }
                 break;
             case 's':
             case 'S':
-                printf("DOWN\n");
+            case (char)40: //arows are not working
+                if(move_player(maze_image,&player_location,DOWN)!=1){
+                    continue;
+                }
                 break;
             case 'd':
             case 'D':
-                printf("RIGHT\n");
+            case (char)39: //arows are not working
+                if(move_player(maze_image,&player_location,RIGHT)!=1){
+                    continue;
+                }
                 break;
             case 'q':
             case 'Q':
                 system("cls");
                 printf("QUIT\n");
-                destroy_maze_image(maze_image);
                 printf("\nPress Enter to continue...");
                 while (getchar() != '\n');
                 destroy_maze(maze);
                 return 0;
             default:
-                printf("INVALID INPUT\n");
-                break;
+                continue;
             }
+            system("cls");
+            print_maze_image(maze_image);
         }
     }
 }
