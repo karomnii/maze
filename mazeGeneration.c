@@ -7,6 +7,7 @@
 
 #include "dataTypes.h"
 #include "mazeGeneration.h"
+#include "playerFunctions.h"
 
 
 void generate_maze(struct cell *current_cell) {
@@ -209,5 +210,109 @@ void print_maze_image(char **maze_image){
     for (size_t i = 0; *(maze_image+i)!=NULL; i++)
     {
         printf("%s\n",*(maze_image+i));
+    }
+}
+void print_maze_mode_2(char **maze_image,struct point *player_position){
+    if(maze_image==NULL) return;
+    if(player_position==NULL) return;
+    int rows=get_rows(maze_image);
+    int cols=get_columns(maze_image);
+    if((player_position->x<0) || (player_position->x>=cols) || (player_position->y<0) || (player_position->y>=rows)){
+        return;
+    }
+    int start_cols,start_rows,end_cols,end_rows;
+    if(player_position->y<=2) start_rows=0;
+    else start_rows=player_position->y-3;
+    if(player_position->x<=2) start_cols=0;
+    else start_rows=player_position->x-3;
+    if((rows-player_position->y)<=2) end_rows=rows;
+    else end_rows=player_position->y+3;
+    if((cols-player_position->x)<=2) end_cols=cols;
+    else end_cols=player_position->x+3;
+    printf("start cols=%d start rows=%d end cols=%d end rows=%d\n",start_cols,start_rows,end_cols,end_rows);
+    for (size_t i = start_rows; i < end_rows; i++)
+    {
+        for (size_t j = start_cols; j < end_cols; j++)
+        {
+            if(*(*(maze_image+i)+j)=='@') printf("@");
+            else if(*(*(maze_image+i)+j)=='X') printf("X");
+            else if(*(*(maze_image+i)+j)==' '&&is_visible(maze_image,player_position,j,i)) printf(" ");
+            else printf("#");
+        }
+        printf("\n");
+    }
+    
+}
+int is_visible(char **maze_image,struct point *player_position,int x, int y){
+    if(maze_image==NULL||player_position==NULL||x<0||y<0) return 0;
+    if(x!=player_position->x&&y!=player_position->y) return 0;
+    if(y==player_position->y){
+        int diff;
+        if(player_position->x>x){
+            diff=player_position->x-x;
+            switch (diff)
+            {
+            case 1:
+                return 1;
+            case 2:
+                if(*(*(maze_image+y)+x-1)==' ') return 1;
+                else return 0;
+            case 3:
+                if(*(*(maze_image+y)+x-2)==' '&&*(*(maze_image+y)+x-1)==' ') return 1;
+                else return 0;
+            default:
+                return 0;
+            }
+        } else 
+        {
+            diff=x-player_position->x;
+            switch (diff)
+            {
+            case 1:
+                return 1;
+            case 2:
+                if(*(*(maze_image+y)+x+1)==' ') return 1;
+                else return 0;
+            case 3:
+                if(*(*(maze_image+y)+x+2)==' '&&*(*(maze_image+y)+x+1)==' ') return 1;
+                else return 0;
+            default:
+                return 0;
+            }
+        }
+    } else{
+        int diff;
+        if(player_position->y>y){
+            diff=player_position->y-y;
+            switch (diff)
+            {
+            case 1:
+                return 1;
+            case 2:
+                if(*(*(maze_image+y-1)+x)==' ') return 1;
+                else return 0;
+            case 3:
+                if(*(*(maze_image+y-2)+x)==' '&&*(*(maze_image+y-1)+x)==' ') return 1;
+                else return 0;
+            default:
+                return 0;
+            }
+        } else 
+        {
+            diff=y-player_position->y;
+            switch (diff)
+            {
+            case 1:
+                return 1;
+            case 2:
+                if(*(*(maze_image+y+1)+x)==' ') return 1;
+                else return 0;
+            case 3:
+                if(*(*(maze_image+y+2)+x)==' '&&*(*(maze_image+y+1)+x)==' ') return 1;
+                else return 0;
+            default:
+                return 0;
+            }
+        }
     }
 }
