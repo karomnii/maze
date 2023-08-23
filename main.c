@@ -81,38 +81,54 @@ int main() {
             case 'w':
             case 'W':
             case (char)38: //arows are not working
-                if(move_player(maze_image,&player_location,UP)!=1){
-                    continue;
+                result=move_player(maze_image,&player_location,UP);
+                if(result==3){
+                    destroy_maze_image(maze_image);
+                    player_won();
+                    return 0;
                 }
+                if(result!=1) continue;
+                break;
                 break;
             case 'a':
             case 'A':
             case (char)37: //arows are not working
-                if(move_player(maze_image,&player_location,LEFT)!=1){
-                    continue;
+                result=move_player(maze_image,&player_location,LEFT);
+                if(result==3){
+                    destroy_maze_image(maze_image);
+                    player_won();
+                    return 0;
                 }
+                if(result!=1) continue;
                 break;
             case 's':
             case 'S':
             case (char)40: //arows are not working
-                if(move_player(maze_image,&player_location,DOWN)!=1){
-                    continue;
+                result=move_player(maze_image,&player_location,DOWN);
+                if(result==3){
+                    destroy_maze_image(maze_image);
+                    player_won();
+                    return 0;
                 }
+                if(result!=1) continue;
+                break;
                 break;
             case 'd':
             case 'D':
-            case (char)39: //arows are not working
-                if(move_player(maze_image,&player_location,RIGHT)!=1){
-                    continue;
+            case (char)39: //arows are not workingfds
+                result=move_player(maze_image,&player_location,RIGHT);
+                if(result==3){
+                    destroy_maze_image(maze_image);
+                    player_won();
+                    return 0;
                 }
+                if(result!=1) continue;
+                break;
                 break;
             case 'q':
             case 'Q':
-                system("cls");
-                printf("QUIT\n");
-                printf("\nPress Enter to continue...");
-                while (getchar() != '\n');
-                destroy_maze(maze);
+                destroy_maze_image(maze_image);
+                end_game();
                 return 0;
             default:
                 continue;

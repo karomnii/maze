@@ -93,7 +93,7 @@ int move_player(char **maze_image, struct point *player_position, enum direction
     if(maze_image==NULL||player_position==NULL) return -1;
     int rows=get_rows(maze_image);
     int columns=get_columns(maze_image);
-    if(player_position->x<0 || player_position->x>=rows || player_position->y<0 || player_position->y>=columns){
+    if((player_position->x<0) || (player_position->x>=columns) || (player_position->y<0) || (player_position->y>=rows)){
         return -1;
     }
     char new_board_value;
@@ -102,7 +102,7 @@ int move_player(char **maze_image, struct point *player_position, enum direction
     case UP:
         if(player_position->y-1<0) return 0;
         new_board_value=*(*(maze_image+player_position->y-1)+player_position->x);
-        if((new_board_value==' ') || (new_board_value=='$') || (new_board_value='X')){
+        if((new_board_value==' ') || (new_board_value=='$') || (new_board_value=='X')){
             *(*(maze_image+player_position->y-1)+player_position->x)='@';
             *(*(maze_image+player_position->y)+player_position->x)=' ';
             player_position->y--;
@@ -111,7 +111,7 @@ int move_player(char **maze_image, struct point *player_position, enum direction
     case DOWN:
         if(player_position->y+1>rows) return 0;
         new_board_value=*(*(maze_image+player_position->y+1)+player_position->x);
-        if((new_board_value==' ') || (new_board_value=='$') || (new_board_value='X')){
+        if((new_board_value==' ') || (new_board_value=='$') || (new_board_value=='X')){
             *(*(maze_image+player_position->y+1)+player_position->x)='@';
             *(*(maze_image+player_position->y)+player_position->x)=' ';
             player_position->y++;
@@ -120,7 +120,7 @@ int move_player(char **maze_image, struct point *player_position, enum direction
     case LEFT:
         if(player_position->x-1<0) return 0;
         new_board_value=*(*(maze_image+player_position->y)+player_position->x-1);
-        if((new_board_value == ' ') || (new_board_value=='$') || (new_board_value='X')){
+        if((new_board_value == ' ') || (new_board_value=='$') || (new_board_value=='X')){
             *(*(maze_image+player_position->y)+player_position->x-1)='@';
             *(*(maze_image+player_position->y)+player_position->x)=' ';
             player_position->x--;
@@ -129,7 +129,7 @@ int move_player(char **maze_image, struct point *player_position, enum direction
     case RIGHT:
         if(player_position->x+1>columns) return 0;
         new_board_value=*(*(maze_image+player_position->y)+player_position->x+1);
-        if((new_board_value==' ') || (new_board_value=='$') || (new_board_value='X')){
+        if((new_board_value==' ') || (new_board_value=='$') || (new_board_value=='X')){
             *(*(maze_image+player_position->y)+player_position->x+1)='@';
             *(*(maze_image+player_position->y)+player_position->x)=' ';
             player_position->x++;
@@ -149,4 +149,16 @@ int move_player(char **maze_image, struct point *player_position, enum direction
         default:
             return -1;
         }
+}
+void player_won(){
+    system("cls");
+    printf("Congratulations you have won =)\n");
+    printf("\nPress Enter to continue...");
+    while (getchar() != '\n');
+}
+void end_game(){
+    system("cls");
+    printf("QUIT\n");
+    printf("\nPress Enter to continue...");
+    while (getchar() != '\n');
 }
