@@ -223,12 +223,12 @@ void print_maze_mode_2(char **maze_image,struct point *player_position){
     int start_cols,start_rows,end_cols,end_rows;
     if(player_position->y<=1) start_rows=0;
     else start_rows=player_position->y-2;
-    if(player_position->x<=3) start_cols=0;
-    else start_cols=player_position->x-4;
-    if((rows-player_position->y-1)<=3) end_rows=rows;
+    if(player_position->x<=2) start_cols=0;
+    else start_cols=player_position->x-3;
+    if((rows-player_position->y-1)<=2) end_rows=rows;
     else end_rows=player_position->y+3;
     if((cols-player_position->x-1)<=3) end_cols=cols;
-    else end_cols=player_position->x+3;
+    else end_cols=player_position->x+4;
     printf("player postion y:%d x:%d rows:%d cols:%d start cols=%d start rows=%d end cols=%d end rows=%d\n",player_position->y,player_position->x,rows,cols,start_cols,start_rows,end_cols,end_rows);
     for (size_t i = start_rows; i < end_rows; i++)
     {
@@ -245,9 +245,22 @@ void print_maze_mode_2(char **maze_image,struct point *player_position){
 }
 int is_visible(char **maze_image,struct point *player_position,int x, int y){
     if(maze_image==NULL||player_position==NULL||x<0||y<0) return 0;
-    if(((x+1==player_position->x)&&(y+1==player_position->y))||((x-1==player_position->x)&&(y+1==player_position->y))||((x+1==player_position->x)&&(y-1==player_position->y))||((x-1==player_position->x)&&(y-1==player_position->y))) return 1; //player corners
-    if(((x+2==player_position->x)&&(y+1==player_position->y)&&*(*(maze_image+player_position->y)+x-1)==' ')||((x+2==player_position->x)&&(y-1==player_position->y)&&*(*(maze_image+player_position->y)+x-1)==' ')||((x-2==player_position->x)&&(y+1==player_position->y)&&*(*(maze_image+player_position->y)+x+1)==' ')||((x-2==player_position->x)&&(y-1==player_position->y)&&*(*(maze_image+player_position->y)+x+1)==' ')) return 1;
-    if(((x+1==player_position->x)&&(y+2==player_position->y)&&*(*(maze_image+y-1)+player_position->x)==' ')||((x-1==player_position->x)&&(y+2==player_position->y)&&*(*(maze_image+y-1)+player_position->x)==' ')||((x+1==player_position->x)&&(y-2==player_position->y)&&*(*(maze_image+y+1)+player_position->x)==' ')||((x-1==player_position->x)&&(y-2==player_position->y)&&*(*(maze_image+y+1)+player_position->x)==' ')) return 1;
+
+    if(((x+1==player_position->x)&&(y+1==player_position->y))
+    ||((x-1==player_position->x)&&(y+1==player_position->y))
+    ||((x+1==player_position->x)&&(y-1==player_position->y))
+    ||((x-1==player_position->x)&&(y-1==player_position->y))) return 1; //player corners
+    
+    if(((x+2==player_position->x)&&(y+1==player_position->y)&&*(*(maze_image+player_position->y)+player_position->x-1)==' '&&*(*(maze_image+player_position->y-1)+player_position->x-1)==' ')
+    ||((x+2==player_position->x)&&(y-1==player_position->y)&&*(*(maze_image+player_position->y)+player_position->x-1)==' '&&*(*(maze_image+player_position->y+1)+player_position->x-1)==' ')
+    ||((x-2==player_position->x)&&(y+1==player_position->y)&&*(*(maze_image+player_position->y)+player_position->x+1)==' '&&*(*(maze_image+player_position->y-1)+player_position->x+1)==' ')
+    ||((x-2==player_position->x)&&(y-1==player_position->y)&&*(*(maze_image+player_position->y)+player_position->x+1)==' '&&*(*(maze_image+player_position->y+1)+player_position->x+1)==' ')) return 1;
+    
+    if(((x+1==player_position->x)&&(y+2==player_position->y)&&*(*(maze_image+player_position->y-1)+player_position->x-1)==' '&&*(*(maze_image+player_position->y-1)+player_position->x)==' ')
+    ||((x-1==player_position->x)&&(y+2==player_position->y)&&*(*(maze_image+player_position->y-1)+player_position->x+1)==' '&&*(*(maze_image+player_position->y-1)+player_position->x)==' ')
+    ||((x+1==player_position->x)&&(y-2==player_position->y)&&*(*(maze_image+player_position->y+1)+player_position->x-1)==' '&&*(*(maze_image+player_position->y+1)+player_position->x)==' ')
+    ||((x-1==player_position->x)&&(y-2==player_position->y)&&*(*(maze_image+player_position->y+1)+player_position->x+1)==' '&&*(*(maze_image+player_position->y+1)+player_position->x)==' ')) return 1;
+
     if(x!=player_position->x&&y!=player_position->y) return 0; //if points are not in the same line (same x or same y) then return 0
     if(y==player_position->y){
         int diff;
