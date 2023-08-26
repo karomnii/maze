@@ -22,7 +22,7 @@ int main() {
         printf("Incorrect input\n Exiting...\n");
         return 1;
     }
-    printf("Choose game mode\n 1-You see the whole labyrinth\n 2-you see maximum 3 spaces ahead\n 3-you see maximum 1 spaces ahead\n mode: ");
+    printf("Choose game mode\n 1-You see the whole labyrinth\n 2-you see maximum 3 spaces ahead\n mode: ");
     unsigned int game_mode;
     if(scanf("%u",  &game_mode) != 1)
     {
