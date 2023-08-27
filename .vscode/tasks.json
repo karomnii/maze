@@ -10,7 +10,7 @@
                 "${fileDirname}/*.c",
                 "${fileDirname}/*.h",
                 "-o",
-                "${fileDirname}\\${fileBasenameNoExtension}.exe"
+                "${fileDirname}\\maze.exe"
             ],
             "options": {
                 "cwd": "${fileDirname}"

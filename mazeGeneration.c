@@ -230,8 +230,16 @@ void print_maze_mode_2(char **maze_image,struct point *player_position){
     if((cols-player_position->x-1)<=3) end_cols=cols;
     else end_cols=player_position->x+4;
     printf("player postion y:%d x:%d rows:%d cols:%d start cols=%d start rows=%d end cols=%d end rows=%d\n",player_position->y,player_position->x,rows,cols,start_cols,start_rows,end_cols,end_rows);
+    
+    if(player_position->y<=1) for (size_t i = 0; i < 2-player_position->y; i++) {
+        for (size_t j = 0; j < 7; j++) printf("#");
+        printf("\n");
+    }
+    
     for (size_t i = start_rows; i < end_rows; i++)
     {
+        if(player_position->x<=2) for (size_t j = 0; j < 3-player_position->x; j++) printf("#");
+        
         for (size_t j = start_cols; j < end_cols; j++)
         {
             if(*(*(maze_image+i)+j)=='@') printf("@");
@@ -239,6 +247,14 @@ void print_maze_mode_2(char **maze_image,struct point *player_position){
             else if(*(*(maze_image+i)+j)==' '&&is_visible(maze_image,player_position,j,i)) printf(" ");
             else printf("#");
         }
+
+        if((cols-player_position->x-1)<=3) for (size_t j = 0; j < 3-(cols-player_position->x-1); j++) printf("#");
+
+        printf("\n");
+    }
+
+    if((rows-player_position->y-1)<=2) for (size_t i = 0; i < 2-(rows-player_position->y-1); i++) {
+        for (size_t j = 0; j < 7; j++) printf("#");
         printf("\n");
     }
     
