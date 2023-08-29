@@ -15,14 +15,15 @@
 
 int main() {
     srand(time(NULL));
-    unsigned rows, cols;
+    unsigned input_rows, input_cols;
     printf("Enter the number of rows and columns of the maze[example: \"10 10 -enter-\"]: ");
-    if(scanf("%u %u",  &rows,  &cols) != 2)
+    if(scanf("%u %u",  &input_rows,  &input_cols) != 2)
     {
         printf("Incorrect input\n Exiting...\n");
         return 1;
     }
-    printf("Choose game mode\n 1-You see the whole labyrinth\n 2-you see maximum 3 spaces ahead\n mode: ");
+    system("cls");
+    printf("Choose game mode\n 1-You see the whole labyrinth(boring)\n 2-you can't see through walls and your view is maximum 3 spaces ahead \n 3-you can see through walls but it is only 5 sapces ahead(better for bigger labyrinths)\n mode: ");
     unsigned int game_mode;
     if(scanf("%u",  &game_mode) != 1)
     {
@@ -35,7 +36,7 @@ int main() {
     }
     system("cls");
     struct cell **maze;
-    int result = initialize_maze(&maze, rows, cols);
+    int result = initialize_maze(&maze, input_rows, input_cols);
     if(result == 1)
     {
         printf("Incorrect input data\n Exiting...\n");
@@ -46,27 +47,80 @@ int main() {
         printf("Memory allocation error\n Exiting...\n");
         return 4;
     }
-    generate_maze((*maze + (int)cols/2));
+    generate_maze((*maze + (int)input_cols/2));
     char **maze_image;
     maze_to_memory(maze,&maze_image);
     destroy_maze(maze);
-    //only chars for now
+    //only chars from now on
     struct point player_location;
-    struct point start;
-    start.x=1;
-    start.y=1;
-    struct point end;
-    end.x=(cols)*4-1;
-    end.y=(rows)*2-1;
+    struct point start={1,1};
+    struct point end={(input_cols)*4-1,(input_rows)*2-1};
     add_player(maze_image,start,&player_location);
     add_exit(maze_image,end);
-    print_maze_image(maze_image);
+
+    int rows=get_rows(maze_image),cols=get_columns(maze_image); //get rows and cols of the image
     
-    //need to get into this for now chatgpt generated
+    // Get handles to the standard input
     HANDLE hStdin = GetStdHandle(STD_INPUT_HANDLE);
+
     DWORD mode;
     GetConsoleMode(hStdin, &mode);
-    SetConsoleMode(hStdin, mode & (~ENABLE_ECHO_INPUT) & (~ENABLE_LINE_INPUT)); //sets console to input without pressing enter
+    // sets console to input mode without pressing enter
+    SetConsoleMode(hStdin, mode & (~ENABLE_ECHO_INPUT) & (~ENABLE_LINE_INPUT));
+    // not working
+    // HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
+    // CONSOLE_FONT_INFOEX fontInfo;
+    // fontInfo.cbSize = sizeof(CONSOLE_FONT_INFOEX);
+    // GetCurrentConsoleFontEx(hStdOut, FALSE, &fontInfo);
+    // fontInfo.dwFontSize.X = 8; // Font width
+    // fontInfo.dwFontSize.Y = 16; // Font height
+    // SetCurrentConsoleFontEx(hStdOut, FALSE, &fontInfo);
+
+    // Get handle to the standard output
+    HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
+    // Change console properties
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+    GetConsoleScreenBufferInfo(hStdOut, &csbi);
+
+    COORD newSize; // Set the new size (columns, rows)
+    switch (game_mode)
+    {
+    case 1:
+        newSize.X =cols;
+        newSize.Y =rows+1;
+        break;
+    case 2:
+        newSize.X =8;
+        newSize.Y =6;
+        break;
+    case 3:
+        newSize.X =18;
+        newSize.Y =12;
+        break;
+
+    default:
+        newSize.X =200;
+        newSize.Y =100;
+        break;
+    }
+    if(game_mode==1){
+        newSize.X =cols;
+        newSize.Y =rows+1;
+    }
+    if(game_mode==2){
+        newSize.X =8;
+        newSize.Y =6;
+    }
+    SMALL_RECT srWindow = {0, 0, newSize.X - 1, newSize.Y - 1};
+    SetConsoleWindowInfo(hStdOut, TRUE, &srWindow);
+    SetConsoleScreenBufferSize(hStdOut, newSize);
+
+    // Change text color
+    SetConsoleTextAttribute(hStdOut, FOREGROUND_RED | FOREGROUND_INTENSITY);
+
+    if(game_mode==1) print_maze_mode_1(maze_image);
+    else if(game_mode==2) print_maze_mode_2(maze_image,&player_location);
+    else print_maze_mode_3(maze_image,&player_location);
     char current=' ';
     int score=0;
      while (1) {
@@ -76,10 +130,10 @@ int main() {
             {
             case 'w':
             case 'W':
-            case (char)38: //arows are not working
                 result=move_player(maze_image,&player_location,UP);
                 if(result==3){
                     destroy_maze_image(maze_image);
+                    SetConsoleTextAttribute(hStdOut, csbi.wAttributes);
                     player_won(score);
                     return 0;
                 }
@@ -88,10 +142,10 @@ int main() {
                 break;
             case 'a':
             case 'A':
-            case (char)37: //arows are not working
                 result=move_player(maze_image,&player_location,LEFT);
                 if(result==3){
                     destroy_maze_image(maze_image);
+                    SetConsoleTextAttribute(hStdOut, csbi.wAttributes);
                     player_won(score);
                     return 0;
                 }
@@ -100,10 +154,10 @@ int main() {
                 break;
             case 's':
             case 'S':
-            case (char)40: //arows are not working
                 result=move_player(maze_image,&player_location,DOWN);
                 if(result==3){
                     destroy_maze_image(maze_image);
+                    SetConsoleTextAttribute(hStdOut, csbi.wAttributes);
                     player_won(score);
                     return 0;
                 }
@@ -112,10 +166,10 @@ int main() {
                 break;
             case 'd':
             case 'D':
-            case (char)39: //arows are not workingfds
                 result=move_player(maze_image,&player_location,RIGHT);
                 if(result==3){
                     destroy_maze_image(maze_image);
+                    SetConsoleTextAttribute(hStdOut, csbi.wAttributes);
                     player_won(score);
                     return 0;
                 }
@@ -125,14 +179,16 @@ int main() {
             case 'q':
             case 'Q':
                 destroy_maze_image(maze_image);
+                SetConsoleTextAttribute(hStdOut, csbi.wAttributes);
                 end_game();
                 return 0;
             default:
                 continue;
             }
             system("cls");
-            if(game_mode==1) print_maze_image(maze_image);
+            if(game_mode==1) print_maze_mode_1(maze_image);
             else if(game_mode==2) print_maze_mode_2(maze_image,&player_location);
+            else print_maze_mode_3(maze_image,&player_location);
         }
     }
 }

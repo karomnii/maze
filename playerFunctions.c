@@ -152,6 +152,7 @@ int move_player(char **maze_image, struct point *player_position, enum direction
 }
 void player_won(int score){
     system("cls");
+    fflush(stdin);
     printf("Congratulations you have won =) and scored %d points\n",score);
     printf("\nPress Enter to continue...");
     while (getchar() != '\n');

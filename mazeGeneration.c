@@ -205,7 +205,7 @@ void destroy_maze_image(char **maze_image){
     for (size_t i = 0; *(maze_image+i)!=NULL; i++) free(*(maze_image+i));
     free(maze_image);
 }
-void print_maze_image(char **maze_image){
+void print_maze_mode_1(char **maze_image){
     if(maze_image==NULL) return;
     for (size_t i = 0; *(maze_image+i)!=NULL; i++)
     {
@@ -229,7 +229,7 @@ void print_maze_mode_2(char **maze_image,struct point *player_position){
     else end_rows=player_position->y+3;
     if((cols-player_position->x-1)<=3) end_cols=cols;
     else end_cols=player_position->x+4;
-    printf("player postion y:%d x:%d rows:%d cols:%d start cols=%d start rows=%d end cols=%d end rows=%d\n",player_position->y,player_position->x,rows,cols,start_cols,start_rows,end_cols,end_rows);
+    // printf("player postion y:%d x:%d rows:%d cols:%d start cols=%d start rows=%d end cols=%d end rows=%d\n",player_position->y,player_position->x,rows,cols,start_cols,start_rows,end_cols,end_rows); // for debugging
     
     if(player_position->y<=1) for (size_t i = 0; i < 2-player_position->y; i++) {
         for (size_t j = 0; j < 7; j++) printf("#");
@@ -277,7 +277,6 @@ int is_visible(char **maze_image,struct point *player_position,int x, int y){
     ||((x+1==player_position->x)&&(y-2==player_position->y)&&*(*(maze_image+player_position->y+1)+player_position->x-1)==' '&&*(*(maze_image+player_position->y+1)+player_position->x)==' ')
     ||((x-1==player_position->x)&&(y-2==player_position->y)&&*(*(maze_image+player_position->y+1)+player_position->x+1)==' '&&*(*(maze_image+player_position->y+1)+player_position->x)==' ')) return 1;
 
-    if(x!=player_position->x&&y!=player_position->y) return 0; //if points are not in the same line (same x or same y) then return 0
     if(y==player_position->y){
         int diff;
         if(player_position->x>x){ //player is to the right of the point
@@ -312,7 +311,7 @@ int is_visible(char **maze_image,struct point *player_position,int x, int y){
                 return 0;
             }
         }
-    } else{
+    } else if(x==player_position->x){
         int diff;
         if(player_position->y>y){ //player is lower than the point
             diff=player_position->y-y;
@@ -346,5 +345,35 @@ int is_visible(char **maze_image,struct point *player_position,int x, int y){
                 return 0;
             }
         }
+    }
+    return 0;
+}
+void print_maze_mode_3(char **maze_image, struct point *player_position){
+    if(maze_image==NULL || player_position==NULL) return;
+    int cols=get_columns(maze_image);
+    int rows=get_rows(maze_image);
+    for (size_t i = 0; i < 11; i++)
+    {   
+        if((player_position->y+i-5)<0) {
+            printf("#################\n");
+            continue;
+        }
+        if((player_position->y+i-5)>=rows){
+            printf("#################\n");
+            continue;
+        }
+        for (size_t j = 0; j < 17; j++)
+        {   
+            if((player_position->x+j-8)<0) {
+                printf("#");
+                continue;
+            }
+            if((player_position->x+j-8)>(cols-1)) {
+                printf("#");
+                continue;
+            }
+            printf("%c",*(*(maze_image+player_position->y+i-5)+player_position->x-8+j));
+        }
+        printf("\n");
     }
 }
