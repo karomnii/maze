@@ -29,6 +29,10 @@ struct point{
     unsigned int y;
 };
 
+struct player{
+    struct point position;
+    struct point previous_position;
+};
 // struct board_information{
 //     bool is_player;
 //     point player_position;

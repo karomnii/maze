@@ -88,51 +88,52 @@ void add_treasure(char **maze_image, struct point treasure_point){
         *(*(maze_image+treasure_point.y)+treasure_point.x)='$';
     }
 }
-int move_player(char **maze_image, struct point *player_position, enum direction player_move){
+int move_player(char **maze_image, struct player *player_position, enum direction player_move){
     //returns: -1=invalid function input 0=invalid move 1=valid move 2=tresure 3=finish
     if(maze_image==NULL||player_position==NULL) return -1;
+    player_position->previous_position=player_position->position;
     int rows=get_rows(maze_image);
     int columns=get_columns(maze_image);
-    if((player_position->x<0) || (player_position->x>=columns) || (player_position->y<0) || (player_position->y>=rows)){
+    if((player_position->position.x<0) || (player_position->position.x>=columns) || (player_position->position.y<0) || (player_position->position.y>=rows)){
         return -1;
     }
     char new_board_value;
     switch (player_move)
     {
     case UP:
-        if(player_position->y-1<0) return 0;
-        new_board_value=*(*(maze_image+player_position->y-1)+player_position->x);
+        if(player_position->position.y-1<0) return 0;
+        new_board_value=*(*(maze_image+player_position->position.y-1)+player_position->position.x);
         if((new_board_value==' ') || (new_board_value=='$') || (new_board_value=='X')){
-            *(*(maze_image+player_position->y-1)+player_position->x)='@';
-            *(*(maze_image+player_position->y)+player_position->x)=' ';
-            player_position->y--;
+            *(*(maze_image+player_position->position.y-1)+player_position->position.x)='@';
+            *(*(maze_image+player_position->position.y)+player_position->position.x)=' ';
+            player_position->position.y--;
         } else return 0;
         break;
     case DOWN:
-        if(player_position->y+1>rows) return 0;
-        new_board_value=*(*(maze_image+player_position->y+1)+player_position->x);
+        if(player_position->position.y+1>rows) return 0;
+        new_board_value=*(*(maze_image+player_position->position.y+1)+player_position->position.x);
         if((new_board_value==' ') || (new_board_value=='$') || (new_board_value=='X')){
-            *(*(maze_image+player_position->y+1)+player_position->x)='@';
-            *(*(maze_image+player_position->y)+player_position->x)=' ';
-            player_position->y++;
+            *(*(maze_image+player_position->position.y+1)+player_position->position.x)='@';
+            *(*(maze_image+player_position->position.y)+player_position->position.x)=' ';
+            player_position->position.y++;
         } else return 0;
         break;
     case LEFT:
-        if(player_position->x-1<0) return 0;
-        new_board_value=*(*(maze_image+player_position->y)+player_position->x-1);
+        if(player_position->position.x-1<0) return 0;
+        new_board_value=*(*(maze_image+player_position->position.y)+player_position->position.x-1);
         if((new_board_value == ' ') || (new_board_value=='$') || (new_board_value=='X')){
-            *(*(maze_image+player_position->y)+player_position->x-1)='@';
-            *(*(maze_image+player_position->y)+player_position->x)=' ';
-            player_position->x--;
+            *(*(maze_image+player_position->position.y)+player_position->position.x-1)='@';
+            *(*(maze_image+player_position->position.y)+player_position->position.x)=' ';
+            player_position->position.x--;
         } else return 0;
         break;
     case RIGHT:
-        if(player_position->x+1>columns) return 0;
-        new_board_value=*(*(maze_image+player_position->y)+player_position->x+1);
+        if(player_position->position.x+1>columns) return 0;
+        new_board_value=*(*(maze_image+player_position->position.y)+player_position->position.x+1);
         if((new_board_value==' ') || (new_board_value=='$') || (new_board_value=='X')){
-            *(*(maze_image+player_position->y)+player_position->x+1)='@';
-            *(*(maze_image+player_position->y)+player_position->x)=' ';
-            player_position->x++;
+            *(*(maze_image+player_position->position.y)+player_position->position.x+1)='@';
+            *(*(maze_image+player_position->position.y)+player_position->position.x)=' ';
+            player_position->position.x++;
         } else return 0;
         break;
     default:

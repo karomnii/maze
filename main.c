@@ -10,6 +10,7 @@
 #include "dataTypes.h"
 #include "mazeGeneration.h"
 #include "playerFunctions.h"
+#include "mazeprinting.h"
 
 
 
@@ -23,18 +24,26 @@ int main() {
         return 1;
     }
     system("cls");
-    printf("Choose game mode\n 1-You see the whole labyrinth(boring)\n 2-you can't see through walls and your view is maximum 3 spaces ahead \n 3-you can see through walls but it is only 5 sapces ahead(better for bigger labyrinths)\n mode: ");
+    printf("Choose game mode\n 1-You see the whole labyrinth(boring)\n 2-you can't see through walls and your view is maximum 3 spaces ahead \n 3-you can see through walls but it is only 5 sapces ahead(better for bigger labyrinths)\n 4-mode 2 but with 2x2 arts\n mode: ");
     unsigned int game_mode;
     if(scanf("%u",  &game_mode) != 1)
     {
         printf("Incorrect input\n Exiting...\n");
         return 1;
     }
-    if(game_mode>3) {
+    if(game_mode>4) {
         printf("Incorrect input data\n Exiting...\n");
         return 2;
     }
     system("cls");
+    char **mode_4_buffer;
+    if(game_mode==4){
+        mode_4_buffer=buffer_for_mode_4();
+        if(mode_4_buffer==NULL){
+            printf("Memory allocation error\n Exiting...\n");
+            return 4;
+        }
+    }
     struct cell **maze;
     int result = initialize_maze(&maze, input_rows, input_cols);
     if(result == 1)
@@ -52,10 +61,10 @@ int main() {
     maze_to_memory(maze,&maze_image);
     destroy_maze(maze);
     //only chars from now on
-    struct point player_location;
+    struct player player_location;
     struct point start={1,1};
     struct point end={(input_cols)*4-1,(input_rows)*2-1};
-    add_player(maze_image,start,&player_location);
+    add_player(maze_image,start,&player_location.position);
     add_exit(maze_image,end);
 
     int rows=get_rows(maze_image),cols=get_columns(maze_image); //get rows and cols of the image
@@ -97,30 +106,27 @@ int main() {
         newSize.X =18;
         newSize.Y =12;
         break;
+    case 4:
+        newSize.X =14;
+        newSize.Y =10;
+        break;
 
     default:
         newSize.X =200;
         newSize.Y =100;
         break;
     }
-    if(game_mode==1){
-        newSize.X =cols;
-        newSize.Y =rows+1;
-    }
-    if(game_mode==2){
-        newSize.X =8;
-        newSize.Y =6;
-    }
     SMALL_RECT srWindow = {0, 0, newSize.X - 1, newSize.Y - 1};
     SetConsoleWindowInfo(hStdOut, TRUE, &srWindow);
     SetConsoleScreenBufferSize(hStdOut, newSize);
+    newSize.X =200;
+    newSize.Y =100;
 
     // Change text color
     SetConsoleTextAttribute(hStdOut, FOREGROUND_RED | FOREGROUND_INTENSITY);
 
-    if(game_mode==1) print_maze_mode_1(maze_image);
-    else if(game_mode==2) print_maze_mode_2(maze_image,&player_location);
-    else print_maze_mode_3(maze_image,&player_location);
+    if(game_mode==4) print_maze_mode_4(maze_image,&(player_location.position),mode_4_buffer); 
+    else print_maze(maze_image,&player_location,game_mode);
     char current=' ';
     int score=0;
      while (1) {
@@ -134,6 +140,7 @@ int main() {
                 if(result==3){
                     destroy_maze_image(maze_image);
                     SetConsoleTextAttribute(hStdOut, csbi.wAttributes);
+                    SetConsoleScreenBufferSize(hStdOut, newSize);
                     player_won(score);
                     return 0;
                 }
@@ -146,6 +153,7 @@ int main() {
                 if(result==3){
                     destroy_maze_image(maze_image);
                     SetConsoleTextAttribute(hStdOut, csbi.wAttributes);
+                    SetConsoleScreenBufferSize(hStdOut, newSize);
                     player_won(score);
                     return 0;
                 }
@@ -158,6 +166,7 @@ int main() {
                 if(result==3){
                     destroy_maze_image(maze_image);
                     SetConsoleTextAttribute(hStdOut, csbi.wAttributes);
+                    SetConsoleScreenBufferSize(hStdOut, newSize);
                     player_won(score);
                     return 0;
                 }
@@ -170,6 +179,7 @@ int main() {
                 if(result==3){
                     destroy_maze_image(maze_image);
                     SetConsoleTextAttribute(hStdOut, csbi.wAttributes);
+                    SetConsoleScreenBufferSize(hStdOut, newSize);
                     player_won(score);
                     return 0;
                 }
@@ -186,9 +196,8 @@ int main() {
                 continue;
             }
             system("cls");
-            if(game_mode==1) print_maze_mode_1(maze_image);
-            else if(game_mode==2) print_maze_mode_2(maze_image,&player_location);
-            else print_maze_mode_3(maze_image,&player_location);
+            if(game_mode==4) print_maze_mode_4(maze_image,&(player_location.position),mode_4_buffer); else
+            print_maze(maze_image,&player_location,game_mode);
         }
     }
 }

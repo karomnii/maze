@@ -11,7 +11,7 @@ int get_columns(char **maze_image);
 int board_is_empty(char **maze_image);
 void add_exit(char **maze_image, struct point exit_point);
 void add_treasure(char **maze_image, struct point treasure_point);
-int move_player(char **maze_image, struct point *player_position, enum direction player_move);
+int move_player(char **maze_image, struct player *player_position, enum direction player_move);
 void player_won(int score);
 void end_game();
 
