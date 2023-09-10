@@ -12,6 +12,7 @@ void print_maze_mode_4(char **maze_image, struct point *player_position, char** 
 void mode_2_to_array(char **maze_image, struct point *player_position,char **small_buffer);
 int is_visible(char **maze_image,struct point *player_position,int x, int y);
 char **buffer_for_mode_4();
+void destroy_mode_4_array(char **buffer);
 
 
 

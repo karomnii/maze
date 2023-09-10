@@ -48,11 +48,13 @@ int main() {
     int result = initialize_maze(&maze, input_rows, input_cols);
     if(result == 1)
     {
+        if(game_mode==4) destroy_mode_4_array(mode_4_buffer);
         printf("Incorrect input data\n Exiting...\n");
         return 2;
     }
     if(result == 4)
     {
+        if(game_mode==4) destroy_mode_4_array(mode_4_buffer);
         printf("Memory allocation error\n Exiting...\n");
         return 4;
     }
@@ -138,6 +140,7 @@ int main() {
             case 'W':
                 result=move_player(maze_image,&player_location,UP);
                 if(result==3){
+                    if(game_mode==4) destroy_mode_4_array(mode_4_buffer);
                     destroy_maze_image(maze_image);
                     SetConsoleTextAttribute(hStdOut, csbi.wAttributes);
                     SetConsoleScreenBufferSize(hStdOut, newSize);
@@ -151,6 +154,7 @@ int main() {
             case 'A':
                 result=move_player(maze_image,&player_location,LEFT);
                 if(result==3){
+                    if(game_mode==4) destroy_mode_4_array(mode_4_buffer);
                     destroy_maze_image(maze_image);
                     SetConsoleTextAttribute(hStdOut, csbi.wAttributes);
                     SetConsoleScreenBufferSize(hStdOut, newSize);
@@ -164,6 +168,7 @@ int main() {
             case 'S':
                 result=move_player(maze_image,&player_location,DOWN);
                 if(result==3){
+                    if(game_mode==4) destroy_mode_4_array(mode_4_buffer);
                     destroy_maze_image(maze_image);
                     SetConsoleTextAttribute(hStdOut, csbi.wAttributes);
                     SetConsoleScreenBufferSize(hStdOut, newSize);
@@ -177,6 +182,7 @@ int main() {
             case 'D':
                 result=move_player(maze_image,&player_location,RIGHT);
                 if(result==3){
+                    if(game_mode==4) destroy_mode_4_array(mode_4_buffer);
                     destroy_maze_image(maze_image);
                     SetConsoleTextAttribute(hStdOut, csbi.wAttributes);
                     SetConsoleScreenBufferSize(hStdOut, newSize);
@@ -188,6 +194,7 @@ int main() {
                 break;
             case 'q':
             case 'Q':
+                if(game_mode==4) destroy_mode_4_array(mode_4_buffer);
                 destroy_maze_image(maze_image);
                 SetConsoleTextAttribute(hStdOut, csbi.wAttributes);
                 end_game();

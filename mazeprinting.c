@@ -367,3 +367,11 @@ char **buffer_for_mode_4(){
     }
     return temp;
 }
+void destroy_mode_4_array(char **buffer){
+    if(buffer==NULL) return;
+    for (size_t i = 0; i < 5; i++)
+    {
+        if(*(buffer+i)!=NULL) free(*(buffer+i));
+    }
+    free(buffer);
+}
