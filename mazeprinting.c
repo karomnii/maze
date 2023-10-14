@@ -112,21 +112,14 @@ void print_maze_mode_3(char **maze_image, struct point *player_position){
 int is_visible(char **maze_image,struct point *player_position,int x, int y){
     if(maze_image==NULL||player_position==NULL||x<0||y<0) return 0;
 
+    if(*(*(maze_image+y)+x)!=' ') return 0;
+
     if(((x+1==player_position->x)&&(y+1==player_position->y))
     ||((x-1==player_position->x)&&(y+1==player_position->y))
     ||((x+1==player_position->x)&&(y-1==player_position->y))
     ||((x-1==player_position->x)&&(y-1==player_position->y))) return 1; //player corners
     
-    if(((x+2==player_position->x)&&(y+1==player_position->y)&&*(*(maze_image+player_position->y)+player_position->x-1)==' '&&*(*(maze_image+player_position->y-1)+player_position->x-1)==' ')
-    ||((x+2==player_position->x)&&(y-1==player_position->y)&&*(*(maze_image+player_position->y)+player_position->x-1)==' '&&*(*(maze_image+player_position->y+1)+player_position->x-1)==' ')
-    ||((x-2==player_position->x)&&(y+1==player_position->y)&&*(*(maze_image+player_position->y)+player_position->x+1)==' '&&*(*(maze_image+player_position->y-1)+player_position->x+1)==' ')
-    ||((x-2==player_position->x)&&(y-1==player_position->y)&&*(*(maze_image+player_position->y)+player_position->x+1)==' '&&*(*(maze_image+player_position->y+1)+player_position->x+1)==' ')) return 1;
-    
-    if(((x+1==player_position->x)&&(y+2==player_position->y)&&*(*(maze_image+player_position->y-1)+player_position->x-1)==' '&&*(*(maze_image+player_position->y-1)+player_position->x)==' ')
-    ||((x-1==player_position->x)&&(y+2==player_position->y)&&*(*(maze_image+player_position->y-1)+player_position->x+1)==' '&&*(*(maze_image+player_position->y-1)+player_position->x)==' ')
-    ||((x+1==player_position->x)&&(y-2==player_position->y)&&*(*(maze_image+player_position->y+1)+player_position->x-1)==' '&&*(*(maze_image+player_position->y+1)+player_position->x)==' ')
-    ||((x-1==player_position->x)&&(y-2==player_position->y)&&*(*(maze_image+player_position->y+1)+player_position->x+1)==' '&&*(*(maze_image+player_position->y+1)+player_position->x)==' ')) return 1;
-
+    //the oldest part, doesnt use recursion
     if(y==player_position->y){
         int diff;
         if(player_position->x>x){ //player is to the right of the point
@@ -196,6 +189,33 @@ int is_visible(char **maze_image,struct point *player_position,int x, int y){
             }
         }
     }
+
+    if(((x+2==player_position->x)&&(y+1==player_position->y)&&*(*(maze_image+player_position->y)+player_position->x-1)==' '&&*(*(maze_image+player_position->y-1)+player_position->x-1)==' ')
+    ||((x+2==player_position->x)&&(y-1==player_position->y)&&*(*(maze_image+player_position->y)+player_position->x-1)==' '&&*(*(maze_image+player_position->y+1)+player_position->x-1)==' ')
+    ||((x-2==player_position->x)&&(y+1==player_position->y)&&*(*(maze_image+player_position->y)+player_position->x+1)==' '&&*(*(maze_image+player_position->y-1)+player_position->x+1)==' ')
+    ||((x-2==player_position->x)&&(y-1==player_position->y)&&*(*(maze_image+player_position->y)+player_position->x+1)==' '&&*(*(maze_image+player_position->y+1)+player_position->x+1)==' ')) return 1;
+    
+    if(((x+1==player_position->x)&&(y+2==player_position->y)&&*(*(maze_image+player_position->y-1)+player_position->x-1)==' '&&*(*(maze_image+player_position->y-1)+player_position->x)==' ')
+    ||((x-1==player_position->x)&&(y+2==player_position->y)&&*(*(maze_image+player_position->y-1)+player_position->x+1)==' '&&*(*(maze_image+player_position->y-1)+player_position->x)==' ')
+    ||((x+1==player_position->x)&&(y-2==player_position->y)&&*(*(maze_image+player_position->y+1)+player_position->x-1)==' '&&*(*(maze_image+player_position->y+1)+player_position->x)==' ')
+    ||((x-1==player_position->x)&&(y-2==player_position->y)&&*(*(maze_image+player_position->y+1)+player_position->x+1)==' '&&*(*(maze_image+player_position->y+1)+player_position->x)==' ')) return 1;
+
+    if((((x+2==player_position->x)&&(y+2==player_position->y))&&is_visible(maze_image,player_position,x+1,y+1))
+    ||(((x+2==player_position->x)&&(y-2==player_position->y))&&is_visible(maze_image,player_position,x+1,y-1))
+    ||(((x-2==player_position->x)&&(y+2==player_position->y))&&is_visible(maze_image,player_position,x-1,y+1))
+    ||(((x-2==player_position->x)&&(y-2==player_position->y))&&is_visible(maze_image,player_position,x-1,y-1))) {
+        //felt weird
+        // printf("x= %d y= %d\n",x,y);
+        return 1;}
+    
+    if((((x+3==player_position->x)&&(y+2==player_position->y))&&is_visible(maze_image,player_position,x+2,y+1))||
+    (((x+3==player_position->x)&&(y-2==player_position->y))&&is_visible(maze_image,player_position,x+2,y-1))||
+    (((x-3==player_position->x)&&(y+2==player_position->y))&&is_visible(maze_image,player_position,x-2,y+1))||
+    (((x-3==player_position->x)&&(y-2==player_position->y))&&is_visible(maze_image,player_position,x-2,y-1)))  {
+        //felt weird v2 bug somewhere there
+        printf("x= %d y= %d\n",x,y);
+        return 1;}
+    
     return 0;
 }
 void print_maze_mode_4(char **maze_image, struct point *player_position, char** small_buffer){

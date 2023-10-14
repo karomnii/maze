@@ -108,10 +108,10 @@ int main() {
         newSize.X =18;
         newSize.Y =12;
         break;
-    case 4:
-        newSize.X =14;
-        newSize.Y =10;
-        break;
+    // case 4:
+    //     newSize.X =14;
+    //     newSize.Y =11;
+    //     break;
 
     default:
         newSize.X =200;
